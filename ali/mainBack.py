@@ -17,7 +17,7 @@ imap = imaplib.IMAP4_SSL('imap.gmail.com')
 
 key = "ON"
 date = datetime.date.today().strftime("%d-%b-%Y")
-imap.login('itsali49365@gmail.com', 'rkuj bwor ehdn nsem')
+imap.login('user', 'password')
 
 status, messages = imap.select('INBOX')
 #stores every single email in a tuple
