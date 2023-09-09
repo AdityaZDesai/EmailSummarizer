@@ -69,7 +69,7 @@ imap.logout()
 
 # imap = imaplib.IMAP4_SSL("imap.gmail.com")  # establish connection
 
-# imap.login("itsali49365@gmail.com", "rkuj bwor ehdn nsem")  # login
+# imap.login("user", "password")  # login
 
 # #print(imap.list())  # print various inboxes
 # status, messages = imap.select("INBOX")  # select inbox
