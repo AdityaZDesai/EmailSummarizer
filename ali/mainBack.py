@@ -2,6 +2,15 @@ from email.header import decode_header
 import imaplib
 import email
 import datetime
+import yaml
+
+with open("creds.yml") as f:
+    content = f.read()
+
+my_credentials = yaml.load(content, Loader=yaml.FullLoader)
+
+user, password = my_credentials["user"], my_credentials["password"]
+
 
 #connecting to gmail 
 imap = imaplib.IMAP4_SSL('imap.gmail.com')
