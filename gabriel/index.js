@@ -73,7 +73,7 @@ async function findComplexity(prompt) {
 
     return {
       success: true,
-      data: response.data.choices[0].text,
+      data: response.data.choices[0].text.trim(),
     };
   } catch (error) {
     return {
@@ -85,6 +85,7 @@ async function findComplexity(prompt) {
   }
 }
 
+<<<<<<< Updated upstream
 // Use the function
 const prompt = processEmailFile()[2]
 findComplexity(prompt)
@@ -95,3 +96,24 @@ findComplexity(prompt)
       console.log("Error:", result.error);
     }
   });
+=======
+// Use the functions
+processEmailFile()
+  .then(async (subjects) => {
+    if (subjects.length > 0) {
+      for (let i = 0; i < subjects.length; i++) {
+        const result = await Summarise(subjects[i]);
+        if (result.success) {
+          console.log(`Summary of email ${i + 1}: ${result.data}\n`);
+        } else {
+          console.log(`Error summarizing email ${i + 1}: ${result.error}\n`);
+        }
+      }
+    } else {
+      console.log("No subjects found in the email file.");
+    }
+  })
+  .catch((err) => {
+    console.error('An error occurred:', err);
+  });
+>>>>>>> Stashed changes
