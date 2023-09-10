@@ -23,9 +23,18 @@ app.get('/', function(req,res){
 })
 
 app.post('/aaa', function(req,res){
+    let dataToSend;
     let username = req.body.email
     let password = req.body.password
     console.log(password)
+    const cp = require('child_process')
+    const python = cp.spawn('python', ['parser.py', username, password])
+    python.stdout.on('data', function (data){ dataToSend = data.toString()})
+    python.stderr.on('data', data=> {console.error(`stderr: ${data}`)});
+    python.on('exit', (code)=> {console.log(`child process exited with code ${code}, ${dataToSend}`);
+    res.sendFile(`${__dirname}/views/index.html`)
+}
+   )
     res.redirect('/')
 
 })
