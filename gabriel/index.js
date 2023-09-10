@@ -1,51 +1,5 @@
-
 const fs = require('fs');
 const readline = require('readline');
-
-async function processEmailFile() {
-  const fileStream = fs.createReadStream('emails.txt');
-  
-  const rl = readline.createInterface({
-    input: fileStream,
-    crlfDelay: Infinity
-  });
-
-  let isCapturing = false;
-  let currentSubjectLines = [];
-  const subjects = [];
-
-  for await (const line of rl) {
-    if (line.toLowerCase().includes('subject')) {
-      if (isCapturing && currentSubjectLines.length > 0) {
-        // End the previous capturing, push the accumulated lines into subjects
-        subjects.push(currentSubjectLines.join('\n'));
-      }
-
-      // Start a new capturing
-      isCapturing = true;
-      currentSubjectLines = [line];
-    } else {
-      if (isCapturing) {
-        currentSubjectLines.push(line);
-      }
-    }
-  }
-
-  // Capture the last subject if it exists
-  if (isCapturing && currentSubjectLines.length > 0) {
-    subjects.push(currentSubjectLines.join('\n'));
-  }
-
-  return subjects
-}
-
-processEmailFile().catch(err => {
-  console.error('An error occurred:', err);
-});
-
-
-
-
 require("dotenv").config();
 const { Configuration, OpenAIApi } = require("openai");
 
@@ -54,7 +8,45 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-async function findComplexity(prompt) {
+async function processEmailFile() {
+  try {
+    const fileStream = fs.createReadStream('emails.txt');
+    
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity
+    });
+
+    let isCapturing = false;
+    let currentSubjectLines = [];
+    const subjects = [];
+
+    for await (const line of rl) {
+      if (line.toLowerCase().includes('subject')) {
+        if (isCapturing && currentSubjectLines.length > 0) {
+          subjects.push(currentSubjectLines.join('\n'));
+        }
+
+        isCapturing = true;
+        currentSubjectLines = [line];
+      } else {
+        if (isCapturing) {
+          currentSubjectLines.push(line);
+        }
+      }
+    }
+
+    if (isCapturing && currentSubjectLines.length > 0) {
+      subjects.push(currentSubjectLines.join('\n'));
+    }
+
+    return subjects;
+  } catch (err) {
+    console.error('An error occurred:', err);
+  }
+}
+
+async function Summarise(prompt) {
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
@@ -85,13 +77,23 @@ async function findComplexity(prompt) {
   }
 }
 
-// Use the function
-const prompt = processEmailFile()[2]
-findComplexity(prompt)
-  .then((result) => {
-    if (result.success) {
-      console.log("Summary:", result.data);
+
+processEmailFile()
+  .then((subjects) => {
+
+    if (subjects.length > 0) {
+      return Summarise(subjects[0]);
     } else {
+      console.log("No subjects found in the email file.");
+    }
+  })
+  .then((result) => {
+    if (result && result.success) {
+      console.log("Summary:", result.data);
+    } else if (result && result.error) {
       console.log("Error:", result.error);
     }
+  })
+  .catch((err) => {
+    console.error('An error occurred:', err);
   });
