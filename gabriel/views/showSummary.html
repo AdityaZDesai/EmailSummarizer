@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Email Summaries</title>
+    <link rel="stylesheet" href="/bootstrap.min.css">
+    <style>
+      .grey-banner {
+        background-color: #e7ebee;
+        padding: 40px 0;
+      }
+      .beige-banner {
+        background-color: #d8d3cc;
+        padding: 70px 0;
+      }
+      .white-box {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="beige-banner text-black">
+      <h1 class="text-center fw-bold display-1">Email Summaries</h1>
+    </div>
+    <div class="grey-banner">
+      <div class="container mt-3">
+        <div class="white-box">
+          <table class="table table-bordered table-hover table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let i = 0; i < summaries.length; i++) { %>
+                <tr>
+                  <td><%= summaries[i] %></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
